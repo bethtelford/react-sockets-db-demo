@@ -4,9 +4,14 @@ const express = require("express"),
   massive = require("massive"),
   socket = require("socket.io");
 
-const { MASSIVE } = process.env;
+const { SERVER_PORT, MASSIVE } = process.env;
 
-const app = express();
+const app = express(),
+  io = socket(
+    app.listen(SERVER_PORT, () =>
+      console.log(`Houston we have lift off on port ${SERVER_PORT}`)
+    )
+  );
 
 app.use(bodyParser.json());
 
@@ -20,27 +25,8 @@ app.get("/api/example", (req, res, next) => {
   res.status(200).send("hello");
 });
 
-const PORT = 4000;
-const io = socket(
-  app.listen(PORT, () =>
-    console.log(`Housten we have lift off on port ${PORT}`)
-  )
-);
-
 io.on("connection", socket => {
   console.log("User Connected");
-  // io.emit('message dispatched', 'hello');
-  // EVERYONE
-  // socket.on('message sent', data => {
-  //   console.log(data)
-  //   io.emit('message dispatched', data.message);
-  // })
-
-  //  EVERYONE BUT ME
-  // socket.on('message sent', data => {
-  //   console.log(data)
-  //   socket.broadcast.emit('message dispatched', data.message);
-  // })
 
   // EVERYONE IN THE ROOM
   socket.on("join room", async data => {

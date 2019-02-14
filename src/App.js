@@ -11,7 +11,6 @@ class App extends Component {
       room: '',
       joined: false
     }
-
     this.joinRoom = this.joinRoom.bind(this);
     this.joinSuccess = this.joinSuccess.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
@@ -23,8 +22,12 @@ class App extends Component {
       this.joinSuccess(data)
     })
     this.socket.on('message dispatched', data => {
+      console.log(data)
       this.updateMessages(data);
     })
+  }
+  componentWillUnmount() {
+    this.socket.disconnect();
   }
   sendMessage() {
     this.socket.emit('message sent', {
@@ -40,8 +43,6 @@ class App extends Component {
       messages
     })
   }
-  
-
   joinRoom() {
     if (this.state.room) {
       this.socket.emit('join room', {
@@ -56,6 +57,7 @@ class App extends Component {
     })
   }
   render() {
+    console.log(this.state.messages)
     return (
       <div className="App">
         {this.state.joined ? <h1>My Room: {this.state.room}</h1> : null}
